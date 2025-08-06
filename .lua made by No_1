@@ -1,0 +1,43 @@
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "ClickTPGui"
+gui.ResetOnSpawn = false
+
+local button = Instance.new("TextButton", gui)
+button.Size = UDim2.new(0, 140, 0, 40)
+button.Position = UDim2.new(0.5, -70, 0, 10)
+button.BackgroundColor3 = Color3.new(1,1,1)
+button.TextColor3 = Color3.new(0,0,0)
+button.Font = Enum.Font.SourceSansBold
+button.TextSize = 18
+button.Text = "클릭 텔포트: 꺼짐"
+button.BorderSizePixel = 0
+button.AutoButtonColor = true
+
+local enabled = false
+
+local mouse = player:GetMouse()
+local connection
+
+local function toggle()
+    enabled = not enabled
+    if enabled then
+        button.Text = "클릭 텔포트: 켜짐"
+        connection = mouse.Button1Down:Connect(function()
+            if mouse.Target then
+                local char = player.Character
+                if char and char:FindFirstChild("HumanoidRootPart") then
+                    char.HumanoidRootPart.CFrame = CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0))
+                end
+            end
+        end)
+    else
+        button.Text = "클릭 텔포트: 꺼짐"
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
+    end
+end
+
+button.MouseButton1Click:Connect(toggle)
